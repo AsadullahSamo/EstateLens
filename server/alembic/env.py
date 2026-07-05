@@ -7,9 +7,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from config.settings import settings
-from config.database import Base
-from models.user import User
-from models.refresh_token import RefreshToken
+from models import Base
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url)

@@ -3,6 +3,7 @@ import enum
 
 from sqlalchemy import Column, String, DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from config.database import Base
@@ -20,3 +21,12 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     role = Column(Enum(UserRole), nullable=False, default=UserRole.user)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+    projects = relationship(
+        "Project", back_populates="owner", cascade="all, delete-orphan", lazy="selectin"
+    )
+
+    refresh_tokens = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete-orphan", lazy="selectin"
+    )

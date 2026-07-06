@@ -5,7 +5,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLBut
     return (
       <button
         ref={ref}
-        className={`w-full rounded-md bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm py-3 transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
+        className={`rounded-md bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm py-3 px-4 transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
         {...props}
       />
     );

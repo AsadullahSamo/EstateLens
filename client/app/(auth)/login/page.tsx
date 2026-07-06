@@ -31,7 +31,7 @@ export default function LoginPage() {
 
   return (
     <div className="blueprint-grid min-h-screen flex items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-sm p-10">
         <div className="flex justify-center text-primary">
           <Logo />
         </div>
@@ -65,7 +65,7 @@ export default function LoginPage() {
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" disabled={submitting} className="hover:cursor-pointer">
+          <Button type="submit" disabled={submitting} className="w-full hover:cursor-pointer">
             {submitting ? "Logging in..." : "Log in"}
           </Button>
         </form>

@@ -8,7 +8,7 @@ export function Navbar() {
   return (
     <header className="h-14 shrink-0 border-b border-border bg-card flex items-center justify-end px-6 gap-4">
       <span className="text-sm text-muted-foreground">{user?.full_name}</span>
-      <button onClick={() => logout()} className="text-sm font-medium text-primary hover:underline">
+      <button onClick={() => logout()} className="text-sm font-medium text-primary hover:underline hover:cursor-pointer">
         Log out
       </button>
     </header>

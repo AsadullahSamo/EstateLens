@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { User } from '@/types'
+import { useQueryClient } from "@tanstack/react-query";
 
 
 interface AuthContextValue {
@@ -21,6 +22,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const router = useRouter()
+    const queryClient = useQueryClient()
 
     const fetchME = async () => {
         try {
@@ -41,6 +43,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
 
         const handleLogout = () => {
             setUser(null)
+            queryClient.clear()
             router.push("/login")
         }
 
@@ -73,6 +76,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
         setUser(null);
+        queryClient.clear()
         router.push("/login");
     }
 

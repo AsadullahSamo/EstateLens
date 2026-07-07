@@ -12,14 +12,14 @@ from controllers import project_controller
 router = APIRouter(prefix="/api/projects", tags=["projects"])
 
 
-@router.get("/", response_model=list[ProjectResponse])
+@router.get("", response_model=list[ProjectResponse])
 async def list_projects(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     return await project_controller.list_projects(db=db, owner_id=current_user.id)
 
-@router.post("/", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     payload: ProjectCreate,
     db: AsyncSession = Depends(get_db),

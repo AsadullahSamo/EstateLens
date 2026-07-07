@@ -33,7 +33,7 @@ export function DropdownMenuItem({
     <RadixDropdown.Item
       onSelect={onSelect}
       className={`px-3 py-2 text-sm rounded-sm cursor-pointer outline-none hover:bg-background ${
-        destructive ? "text-destructive" : "text-foreground"
+        destructive ? "text-destructive hover:bg-destructive hover:text-white" : "text-foreground hover:bg-primary hover:text-white"
       }`}
     >
       {children}

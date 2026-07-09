@@ -3,20 +3,32 @@ import api from "@/lib/api";
 import { Project } from "@/types";
 
 export function useProjects() {
-    return useQuery<Project[]> ({
+    return useQuery<Project[]>({
         queryKey: ["projects"],
         queryFn: async () => {
-            const { data } = await api.get<Project []>("/projects")
+            const { data } = await api.get<Project[]>("/projects")
             return data
         }
     })
+}
+
+export function useProject(id: string) {
+    return useQuery<Project>({
+        queryKey: ["projects", id],
+        queryFn: async () => {
+            const { data } = await api.get<Project>(`/projects/${id}`)
+            return data
+        },
+        enabled: !!id
+    })
+
 }
 
 export function useCreateProject() {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async (payload: {name: string, description: string}) => {
-            const { data } = await api.post("/projects", payload)
+            const { data } = await api.post<Project>("/projects", payload)
             return data
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] })
@@ -27,7 +39,7 @@ export function useUpdateProject() {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async( {id, payload}: {id: string, payload: {name?: string, description?: string}} ) => {
-            const { data } = await api.patch(`/projects/${id}`, payload)
+            const { data } = await api.patch<Project>(`/projects/${id}`, payload)
             return data
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] })       

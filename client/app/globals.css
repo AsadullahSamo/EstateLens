@@ -13,6 +13,7 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-muted-foreground: var(--muted-foreground);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --font-sans: var(--font-plex-sans);
   --font-mono: var(--font-plex-mono);
   --font-display: var(--font-archivo);
@@ -29,6 +30,7 @@
   --primary-foreground: #fafafa;
   --muted-foreground: #71717a;
   --destructive: #b3261e;
+  --success: #15803d;
 }
 
 @layer base {

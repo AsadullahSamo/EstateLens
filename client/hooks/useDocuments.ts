@@ -17,7 +17,6 @@ export function useDocuments(projectId: string) {
     })
 }
 
-
 export function useUploadDocument(projectId: string) {
     const queryClient = useQueryClient()
     return useMutation({
@@ -30,5 +29,24 @@ export function useUploadDocument(projectId: string) {
             return data
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects", projectId, "documents"] }),
+    })
+}
+
+export function useDeleteDocument(projectId: string) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (documentId: string) => {
+            await api.delete(`/projects/${projectId}/documents/${documentId}`)
+        },
+        onSuccess: () => queryClient.invalidateQueries({queryKey: ["projects", projectId, "documents"]})
+    })
+}
+
+export function useDownloadDocument(projectId: string) {
+    return useMutation({
+        mutationFn: async (documentId: string) => {
+            const { data } = await api.get<{url: string}>(`/projects/${projectId}/documents/${documentId}/download-url`)
+            return data.url
+        }
     })
 }

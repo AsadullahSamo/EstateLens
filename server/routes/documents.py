@@ -44,3 +44,24 @@ async def list_documents(
     current_user: User = Depends(get_current_user),
 ):
     return await document_controller.list_documents(db=db, owner_id=current_user.id, project_id=project_id)
+
+
+@router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_document(
+    project_id: uuid.UUID,
+    document_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    await document_controller.delete_document(db=db, owner_id=current_user.id, project_id=project_id, document_id=document_id)
+
+
+@router.get("/{document_id}/download-url")
+async def get_download_url(
+    project_id: uuid.UUID,
+    document_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    url = await document_controller.get_download_url(db=db, owner_id=current_user.id, project_id=project_id, document_id=document_id)
+    return {"url": url}

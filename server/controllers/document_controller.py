@@ -60,3 +60,32 @@ async def list_documents(db: AsyncSession, owner_id: uuid.UUID, project_id: uuid
     )
 
     return result.scalars().all()
+
+async def get_document(db: AsyncSession, owner_id: uuid.UUID, project_id: uuid.UUID, document_id: uuid.UUID) -> Document:
+    await project_controller.get_project(db, owner_id, project_id)
+
+    result = await db.execute(
+        select(Document).where(Document.id == document_id, Document.project_id == project_id)
+    )
+    document = result.scalar_one_or_none()
+
+    if not document:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
+    return document
+
+async def delete_document(db: AsyncSession, owner_id: uuid.UUID, project_id: uuid.UUID, document_id: uuid.UUID) -> None:
+    document = await get_document(db, owner_id, project_id, document_id)
+
+    if document.file_url:
+        await storage_service.delete_file(document.file_url)
+
+    await db.delete(document)
+    await db.commit()
+
+async def get_download_url(db: AsyncSession, owner_id: uuid.UUID, project_id: uuid.UUID, document_id: uuid.UUID) -> str:
+    document = await get_document(db, owner_id, project_id, document_id)
+
+    if not document.file_url:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="File not available")
+    
+    return await storage_service.get_signed_url(document.file_url, download_filename=document.filename)

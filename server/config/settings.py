@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     supabase_url: str
     supabase_service_role_key: str
     supabase_storage_bucket: str = "documents"
+    chroma_persist_directory: str = "./chroma_data"
+    groq_api_key: str
+
 
     class Config:
         env_file = ".env"

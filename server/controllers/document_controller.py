@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 
 from models.document import Document, DocumentStatus
 from controllers import project_controller
-from services import storage_service
+from services import storage_service, vector_service
 
 
 ALLOWED_MIME_TYPES = {"application/pdf"}
@@ -78,6 +78,8 @@ async def delete_document(db: AsyncSession, owner_id: uuid.UUID, project_id: uui
 
     if document.file_url:
         await storage_service.delete_file(document.file_url)
+
+    vector_service.delete_document_chunks(str(document_id))
 
     await db.delete(document)
     await db.commit()

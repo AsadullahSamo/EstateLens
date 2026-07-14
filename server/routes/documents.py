@@ -33,7 +33,7 @@ async def upload_document(
         content_type=file.content_type
     )
 
-    background_tasks.add_task(process_document, document.id, content)
+    background_tasks.add_task(process_document, document.id, project_id, content)
     return document
 
 

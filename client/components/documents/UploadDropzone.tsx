@@ -7,6 +7,7 @@ import { useToast } from "../ui/Toast";
 
 export function UploadDropzone({ projectId }: { projectId: string }) {
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadingCount, setUploadingCount] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null);
   const upload = useUploadDocument(projectId);
   const { showToast } = useToast()
@@ -19,10 +20,11 @@ export function UploadDropzone({ projectId }: { projectId: string }) {
           showToast(`Only PDF files are supported.`);
           return;
         }
-        upload.mutate(file);
+        setUploadingCount(c => c + 1)
+        upload.mutate(file, {onSettled: () => setUploadingCount(c => c - 1)});
       });
     },
-    [upload]
+    [upload, showToast]
   );
 
   return (
@@ -40,6 +42,11 @@ export function UploadDropzone({ projectId }: { projectId: string }) {
         <span className="font-medium">Click to upload</span> or drag and drop
       </p>
       <p className="text-xs font-mono uppercase tracking-wide text-muted-foreground">PDF only</p>
+      {uploadingCount > 0 && (
+        <p className="text-xs text-muted-foreground animate-pulse">
+          Uploading {uploadingCount} file{uploadingCount > 1 ? "s" : ""}…
+        </p>
+      )}
       <input
         ref={inputRef}
         type="file"

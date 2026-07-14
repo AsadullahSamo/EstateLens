@@ -28,7 +28,11 @@ export function useUploadDocument(projectId: string) {
             })
             return data
         },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects", projectId, "documents"] }),
+        onSuccess: (newDocument) => {
+            queryClient.setQueryData<Document[]> (["projects", projectId, "documents"], (old) => {
+                return old ? [newDocument, ...old] : [newDocument]
+            })
+        }
     })
 }
 

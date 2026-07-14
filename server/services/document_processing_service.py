@@ -1,11 +1,12 @@
+import asyncio
 import uuid
-import fitz
 
 from config.database import AsyncSessionLocal
 from models.document import Document, DocumentStatus
+from services import ocr_service, chunking_service, vector_service, classification_service
 
 
-async def process_document(document_id: uuid.UUID, content: bytes) -> None:
+async def process_document(document_id: uuid.UUID, project_id: uuid.UUID, content: bytes) -> None:
     async with AsyncSessionLocal() as db:
         document = await db.get(Document, document_id)
         if not document:
@@ -15,9 +16,15 @@ async def process_document(document_id: uuid.UUID, content: bytes) -> None:
         await db.commit()
 
         try:
-            pdf = fitz.open(stream=content, filetype="pdf")
-            document.page_count = pdf.page_count
-            pdf.close()
+            pages = await asyncio.to_thread(ocr_service.extract_pages, content)
+            document.page_count = len(pages)
+
+            chunks = await asyncio.to_thread(chunking_service.chunk_pages, pages)
+            await asyncio.to_thread(vector_service.index_chunks, str(project_id), str(document_id), chunks)
+
+            full_text = " ".join(page.text for page in pages)
+            document.document_type = await asyncio.to_thread(classification_service.classify_document, full_text)
+
             document.status = DocumentStatus.COMPLETED
             document.error_message = None
         except Exception as exc:
